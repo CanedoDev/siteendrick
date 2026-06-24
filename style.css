@@ -1,0 +1,1180 @@
+@font-face {
+    font-family: 'Acumin Pro';
+    src: url('fonts/acumin-pro/Acumin-RPro.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Acumin Pro';
+    src: url('fonts/acumin-pro/Acumin-BdPro.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Clash Display';
+    src: url('fonts/clash-display-font/ClashDisplay-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Clash Display';
+    src: url('fonts/clash-display-font/ClashDisplay-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Clash Display';
+    src: url('fonts/clash-display-font/ClashDisplay-Semibold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Clash Display';
+    src: url('fonts/clash-display-font/ClashDisplay-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Acumin Pro', sans-serif;
+}
+
+/* Destaques (Títulos e menus) */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.top-menu a,
+.loader-text,
+.spc-text,
+.sequential-stat,
+.timeline-title,
+.timeline-year {
+    font-family: 'Clash Display', sans-serif;
+}
+
+body {
+    background-color: #e8e8e8;
+    background-image: url('img/hero bg.webp');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #111111;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    /* Oculta scrollbar no Firefox */
+}
+
+/* Oculta scrollbar no Chrome, Safari e Edge */
+::-webkit-scrollbar {
+    display: none;
+}
+
+/* Top Menu Styles */
+.top-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 20px 0;
+    background-color: transparent;
+    z-index: 9999;
+    mix-blend-mode: difference;
+    /* MÁSCARA MÁGICA: Inverte as cores com base no fundo */
+}
+
+.top-menu a {
+    position: relative;
+    text-decoration: none;
+    color: #ffffff;
+    /* Branco, que ao inverter no fundo claro fica preto, e no fundo escuro continua claro */
+    font-size: 0.75rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 8px 15px;
+    /* Espaço para o fundo amarelo aparecer bem */
+    overflow: hidden;
+    transition: color 0.3s ease;
+}
+
+/* Background amarelo indo da esquerda para a direita */
+.top-menu a::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #FFD700;
+    /* Amarelo base */
+    transform: translateX(-101%);
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: -1;
+}
+
+.top-menu a:hover::before {
+    transform: translateX(0);
+}
+
+.top-menu a:hover {
+    color: #000000;
+    /* Preto no hover para contrastar com o fundo amarelo invertido */
+}
+
+.screen-2-content {
+    flex: 0 0 200vw;
+    width: 200vw;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: transparent;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    padding-right: 20vw;
+    /* Gap de scroll visual no final */
+}
+
+.section {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.placeholder-text {
+    font-size: 2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.5;
+}
+
+/* 1. Loader */
+#loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: #f5f5f5;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.loader-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.loader-text-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 60px;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.loader-text {
+    font-size: 3rem;
+    font-style: italic;
+    font-weight: 900;
+    text-transform: uppercase;
+    position: absolute;
+    opacity: 0;
+    /* será animado */
+    white-space: nowrap;
+}
+
+.loader-logo {
+    width: 200px;
+    height: 200px;
+}
+
+/* Configuração inicial para o draw stroke */
+.loader-logo path,
+.loader-logo circle {
+    stroke-dasharray: 500;
+    stroke-dashoffset: 500;
+}
+
+/* 2 & 3. Hero e Text Parallax */
+#hero-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+#hero {
+    /* Background já vem da .section, removendo o #111 */
+    background-image: url('img/hero bg.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.hero-images-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.hero-image-base,
+.hero-image-reveal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    /* Garante que os eventos de mouse passem para o container */
+}
+
+.hero-image-base {
+    z-index: 1;
+}
+
+.hero-image-reveal {
+    z-index: 2;
+    /* Variáveis customizadas que serão atualizadas via GSAP */
+    --mask-x: 50%;
+    --mask-y: 50%;
+    --mask-size: 0px;
+
+    /* Máscara radial com bordas mais suaves (meio termo) */
+    -webkit-mask-image: radial-gradient(circle var(--mask-size) at var(--mask-x) var(--mask-y), black 0%, black 40%, transparent 100%);
+    mask-image: radial-gradient(circle var(--mask-size) at var(--mask-x) var(--mask-y), black 0%, black 40%, transparent 100%);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+}
+
+.hero-video-box {
+    position: absolute;
+    bottom: 5%;
+    left: 5%;
+    width: clamp(150px, 15vw, 250px);
+    /* Responsivo, sem ficar gigantesco */
+    aspect-ratio: 4 / 3;
+    background-color: rgba(0, 0, 0, 0.3);
+    /* Placeholder enquanto o vídeo não entra */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    z-index: 5;
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+}
+
+.hero-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.15);
+    /* Aumenta 15% para dar zoom */
+    transform-origin: top center;
+    /* Prende o topo e empurra o extra para o fundo, cortando o nome do canal */
+}
+
+/* 3 & 4. Combined Wrapper */
+#combined-wrapper {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    background: #001D73;
+    color: #fff;
+    /* Texto branco para contrastar com o azul escuro */
+    z-index: 2;
+    /* Para subir sobre a hero */
+    border: none;
+}
+
+.combined-scroll-container {
+    width: 300vw;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    /* Deixa cliques passarem */
+}
+
+/* Scroll que fica atrás do vídeo */
+.scroll-back {
+    z-index: 1;
+}
+
+/* Scroll que fica na frente do vídeo */
+.scroll-front {
+    z-index: 15;
+}
+
+/* Textos Parallax Normal */
+.scrolling-text-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 20;
+    /* Maior z-index para os textos ficarem bem visíveis */
+    pointer-events: none;
+}
+
+.scrolling-text-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    transform: translateY(100vh);
+    /* Começa embaixo da tela */
+}
+
+.paragraph {
+    font-size: 3rem;
+    font-weight: bold;
+    text-align: center;
+    max-width: 800px;
+    padding: 20px;
+    margin-bottom: 60vh;
+    /* Distância grande entre os parágrafos */
+}
+
+.video-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.timeline-bg-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('img/hero\\ bg.webp');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.combined-video {
+    width: 45vw;
+    border-radius: 16px;
+    position: relative;
+    object-fit: cover;
+    pointer-events: auto;
+}
+
+.scattered-image {
+    position: absolute;
+}
+
+/* Pixelated Parallax Squares */
+.pixel-square {
+    position: absolute;
+    background-color: #001D73;
+    bottom: 100%;
+    /* Faz os quadrados ficarem pendurados para fora do topo da SPC */
+    z-index: 1;
+}
+
+/* Criando o skyline invertido preenchendo 100vw */
+.px-1 {
+    left: 0%;
+    width: 8%;
+    height: 70vh;
+}
+
+.px-2 {
+    left: 8%;
+    width: 6%;
+    height: 40vh;
+}
+
+.px-3 {
+    left: 14%;
+    width: 12%;
+    height: 70vh;
+}
+
+.px-4 {
+    left: 26%;
+    width: 10%;
+    height: 50vh;
+}
+
+.px-5 {
+    left: 36%;
+    width: 7%;
+    height: 76vh;
+}
+
+.px-6 {
+    left: 43%;
+    width: 15%;
+    height: 44vh;
+}
+
+.px-7 {
+    left: 58%;
+    width: 9%;
+    height: 84vh;
+}
+
+.px-8 {
+    left: 67%;
+    width: 6%;
+    height: 18vh;
+}
+
+.px-9 {
+    left: 73%;
+    width: 11%;
+    height: 60vh;
+}
+
+.px-10 {
+    left: 84%;
+    width: 7%;
+    height: 50vh;
+}
+
+.px-11 {
+    left: 91%;
+    width: 5%;
+    height: 80vh;
+}
+
+.px-12 {
+    left: 96%;
+    width: 4%;
+    height: 56vh;
+}
+
+/* Skyline da borda inferior */
+.px-b1 {
+    left: 0%;
+    width: 12%;
+    height: 50vh;
+}
+
+.px-b2 {
+    left: 12%;
+    width: 8%;
+    height: 30vh;
+}
+
+.px-b3 {
+    left: 20%;
+    width: 15%;
+    height: 60vh;
+}
+
+.px-b4 {
+    left: 35%;
+    width: 10%;
+    height: 40vh;
+}
+
+.px-b5 {
+    left: 45%;
+    width: 7%;
+    height: 70vh;
+}
+
+.px-b6 {
+    left: 52%;
+    width: 13%;
+    height: 36vh;
+}
+
+.px-b7 {
+    left: 65%;
+    width: 9%;
+    height: 80vh;
+}
+
+.px-b8 {
+    left: 74%;
+    width: 11%;
+    height: 44vh;
+}
+
+.px-b9 {
+    left: 85%;
+    width: 6%;
+    height: 30vh;
+}
+
+.px-b10 {
+    left: 91%;
+    width: 9%;
+    height: 56vh;
+}
+
+/* Posições das Imagens (espalhadas ao longo de 100vw a 300vw) */
+.img-bg-1 {
+    width: 25vw;
+    height: auto;
+    top: 10%;
+    left: 110vw;
+}
+
+.img-bg-2 {
+    width: 22vw;
+    height: auto;
+    top: 30%;
+    left: 180vw;
+}
+
+.img-bg-3 {
+    width: 20vw;
+    height: auto;
+    top: 15%;
+    left: 260vw;
+}
+
+.img-bg-4 {
+    width: 24vw;
+    height: auto;
+    top: 25%;
+    left: 290vw;
+}
+
+.img-fg-1 {
+    width: 22vw;
+    height: auto;
+    bottom: 15%;
+    left: 150vw;
+}
+
+.img-fg-2 {
+    width: 25vw;
+    height: auto;
+    bottom: 10%;
+    left: 220vw;
+}
+
+/* 6. Imagem Parallax Curto */
+#image-parallax {
+    position: relative;
+    overflow: hidden;
+    min-height: 100vh;
+}
+
+.parallax-bg {
+    position: absolute;
+    top: -50%;
+    /* Espaço extra para mover */
+    left: 0;
+    width: 100%;
+    height: 200%;
+    /* Maior que a seção */
+    background-color: #ddd;
+    /* Placeholder, poderia ser background-image */
+    background-image: linear-gradient(45deg, #e0e0e0, #f5f5f5);
+    z-index: 1;
+}
+
+/* 8. Vídeo Grandão (Rotação) */
+.rotating-video-full {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 11. Footer Reveal */
+/* Para o footer revelar subindo por trás, precisamos que a seção anterior (cards-normal) 
+   não tenha background transparente e o footer esteja fixo no fundo, 
+   OU usaremos ScrollTrigger para sobrepor o footer por cima da anterior.
+   Como o footer DEVE subir POR CIMA da última seção, faremos um z-index maior no footer 
+   e transladaremos ele negativamente via GSAP. */
+#footer {
+    background-color: #e0e0e0;
+    z-index: 10;
+    position: relative;
+}
+
+#cards-normal {
+    background-color: #f5f5f5;
+    z-index: 5;
+    position: relative;
+}
+
+/* 7. Seção Objetos Parallax */
+#normal-150vh {
+    background-color: #f5f5f5;
+    background-image: url('img/hero bg.webp');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    overflow: hidden;
+    position: relative;
+}
+
+.fixed-center-item {
+    width: 30vw;
+    height: 40vh;
+    background-color: #fff;
+    border: 2px solid #ccc;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #111;
+    z-index: 5;
+    /* Centralizar na seção antes de pinar */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.sequential-stat {
+    position: absolute;
+    opacity: 0;
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: #111;
+    text-transform: uppercase;
+    z-index: 6;
+    max-width: 350px;
+    line-height: 1.1;
+    -webkit-text-stroke: 1px #fff;
+}
+
+.stat-left {
+    text-align: left;
+}
+
+.stat-right {
+    text-align: right;
+}
+
+/* =======================================
+   Barra de Progresso (CBF)
+======================================= */
+.scroll-progress-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    /* Espessura da barra */
+    background-color: transparent;
+    /* Antes era rgba(0,0,0,0.1), agora totalmente transparente */
+    z-index: 9999;
+    pointer-events: none;
+    /* Não bloquear cliques */
+}
+
+.scroll-progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: #fbd004;
+    /* Amarelo Brasil */
+    position: relative;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.scroll-progress-icon {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    /* Inicia no zero absoluto, o GSAP atualiza */
+    transform: translate(-50%, -50%);
+    /* Centraliza o ícone exatamente na ponta da barra */
+    width: 32px;
+    /* Tamanho pequenininho do símbolo */
+    height: 32px;
+    z-index: 10000;
+    object-fit: contain;
+}
+
+/* Autógrafo Animado */
+.autograph-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1001;
+    /* Fica entre o vídeo e o scroll frontal */
+    width: 60vw;
+    max-width: 800px;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.autograph-svg {
+    width: 100%;
+    height: auto;
+}
+
+/* ==========================================
+   REFATORAÇÃO: ESTILOS EXTRAÍDOS DO HTML
+   ========================================== */
+
+/* Global Fixed Video */
+.global-fixed-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+}
+
+.global-fixed-video video {
+    width: 40%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+/* Loader */
+#loader {
+    display: none;
+}
+
+/* Combined Section Wrapper */
+#combined-section-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* Hero Section */
+#hero {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 50;
+    transform-origin: center center;
+}
+
+.hero-images-container {
+    width: 100%;
+    height: 100%;
+}
+
+.hero-image-base {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero-image-reveal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.hero-images-container:hover .hero-image-reveal {
+    opacity: 1;
+}
+
+/* Rotational Wrapper */
+#rotational-wrapper {
+    position: relative;
+    width: 100%;
+    height: 0;
+    z-index: 1001;
+    pointer-events: none;
+}
+
+.perspective-container-wrapper {
+    perspective: 1500px;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#big-video-section {
+    border-bottom: none;
+    height: 100vh;
+}
+
+/* SPC Wrapper */
+#spc-video-wrapper {
+    position: relative;
+    width: 100%;
+    background-image: url('img/hero bg.webp');
+    background-color: #111;
+    background-blend-mode: difference;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    z-index: 999;
+    overflow: hidden;
+}
+
+#short-paragraph {
+    background: url('img/hero bg.webp');
+    background-blend-mode: difference;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+    overflow: visible;
+    color: #111;
+    z-index: 3;
+    height: 100vh;
+}
+
+.short-text-container {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+    height: auto;
+}
+
+.spc-text {
+    font-size: 1.8rem;
+    font-weight: 800;
+    max-width: 28%;
+    margin: 0;
+    line-height: 1.3;
+    color: #111;
+    text-transform: uppercase;
+    position: absolute;
+    top: -50px;
+    opacity: 0;
+}
+
+.spc-text-1 {
+    text-align: left;
+    left: 10%;
+}
+
+.spc-text-2 {
+    text-align: right;
+    right: 10%;
+}
+
+/* Sequential Images Wrapper */
+#sequential-images-wrapper {
+    background-color: #138B54;
+    overflow: hidden;
+}
+
+/* Imagens da Seção Verde */
+.green-sec-img {
+    position: absolute;
+    height: auto;
+    z-index: 2; /* Fica atrás das estatísticas e do vídeo principal */
+}
+
+.top-right-img {
+    width: 35vw;
+    top: 15%;
+    right: 5%;
+}
+
+.bottom-left-img {
+    width: 25vw;
+    bottom: 5%;
+    left: 5%;
+}
+
+#sequential-images-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background-color: transparent;
+}
+
+#normal-150vh {
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    border: none;
+}
+
+.sequential-stat.stat-left {
+    top: 50%;
+    left: 10%;
+    transform: translateY(-50%);
+}
+
+.sequential-stat.stat-right {
+    top: 50%;
+    right: 10%;
+    transform: translateY(-50%);
+}
+
+/* Timeline Section */
+#timeline-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #138B54;
+}
+
+.timeline-bg-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('img/hero bg.webp');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+#timeline-horizontal-track {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 850vw;
+    /* 6 items * 100vw + 5 gaps * 50vw */
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    z-index: 5;
+}
+
+.timeline-item {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    flex-shrink: 0;
+    margin-right: 50vw;
+    /* Espaçamento entre as seções */
+}
+
+.timeline-title {
+    position: absolute;
+    top: 8%;
+    left: 5%;
+    font-size: clamp(3.2rem, 6.4vw, 6.4rem);
+    /* Reduzido em 20% */
+}
+
+.timeline-title-smaller {
+    font-size: clamp(2.5rem, 4.4vw, 4.4rem) !important;
+}
+
+.timeline-title, .timeline-title-smaller {
+    font-family: 'Clash Display', sans-serif;
+    font-weight: 600;
+    --bg-translate: -101%;
+    color: #f5f5f5;
+    /* Animado pelo GSAP para #111 */
+    padding: 0.1em 0.3em;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 1;
+    z-index: 2;
+    overflow: hidden;
+}
+
+.timeline-year {
+    position: absolute;
+    bottom: 5%;
+    right: 5%;
+    font-size: clamp(4.8rem, 9.6vw, 11.2rem);
+    /* Reduzido em 20% */
+    font-family: 'Clash Display', sans-serif;
+    font-weight: 500;
+    --bg-translate: -101%;
+    color: #f5f5f5;
+    /* Animado pelo GSAP para #111 */
+    padding: 0 0.2em;
+    margin: 0;
+    line-height: 1;
+    z-index: 2;
+    overflow: hidden;
+}
+
+/* Background amarelo animado via GSAP (Scroll) */
+.timeline-title::before,
+.timeline-year::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #efe32e;
+    transform: translateX(var(--bg-translate));
+    z-index: -1;
+}
+
+.timeline-img {
+    position: absolute;
+    height: auto; /* Mantém a proporção real da imagem */
+    z-index: 1;
+}
+
+.timeline-main {
+    top: 15%;
+    right: 5%;
+    width: 25vw;
+}
+
+.timeline-secondary {
+    bottom: 5%;
+    left: 5%;
+    width: 20vw;
+}
+
+/* Static Images Section */
+#cards-normal {
+    height: 100vh;
+    background-image: url('img/img section pintado.webp');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    z-index: 1001;
+}
+
+.cards-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* Footer */
+#footer {
+    height: 150vh;
+    background-image: url('img/hero bg.webp');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+/* Global Fixed Video */
+.global-fixed-video {
+    position: fixed;
+    top: 60px;
+    /* starts below top menu */
+    left: 0;
+    width: 100vw;
+    height: calc(100vh - 60px);
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    /* Animated by GSAP */
+}
+
+.global-fixed-video video {
+    width: 35%;
+    /* Updated to 35% as requested */
+    height: auto;
+    object-fit: cover;
+    border-radius: 20px;
+    margin-top: 10vh;
+    /* Lowered position by 10% */
+}
+
+/* SPC Background */
+#spc-video-wrapper {
+    background-image: url('img/hero bg.webp');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
+/* Force Light Font Weights */
+.spc-text,
+.sequential-stat,
+.timeline-img {
+    font-weight: 600 !important;
+    color: #111 !important;
+}
+
+/* Cores do Brasil para os Números nas Estatísticas */
+.stat-number {
+    font-weight: 700 !important;
+    /* Número bem destacado e grosso */
+    font-size: 1.2em;
+    /* Um pouquinho maior que o resto do texto */
+}
+
+.stat-green {
+    color: #138B54 !important;
+}
+
+.stat-yellow {
+    color: #FFD700 !important;
+}
+
+.stat-blue {
+    color: #0028FF !important;
+}
