@@ -5,7 +5,6 @@ if ('scrollRestoration' in history) {
 window.scrollTo(0, 0);
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
-
 // Variável para checar se a página já carregou completamente
 let isLoaded = false;
 window.addEventListener("load", () => {
@@ -15,8 +14,9 @@ window.addEventListener("load", () => {
     }
 });
 
-// 1. Animação do Loader (COMENTADO TEMPORARIAMENTE A PEDIDO DO USUÁRIO)
-/*
+// Impede o scroll inicialmente
+document.body.style.overflow = "hidden";
+
 const loaderTimeline = gsap.timeline({
     onComplete: () => {
         // Habilita o scroll do body
@@ -26,35 +26,12 @@ const loaderTimeline = gsap.timeline({
     }
 });
 
-// Impede o scroll inicialmente
-document.body.style.overflow = "hidden";
-
-// ==========================================
-// Limite de Loop do Vídeo Global (0.4s a 7.6s)
-// ==========================================
-const globalVideoContent = document.querySelector('.global-fixed-video video');
-if (globalVideoContent) {
-    globalVideoContent.addEventListener('loadedmetadata', () => {
-        globalVideoContent.currentTime = 0.3;
-    });
-    globalVideoContent.addEventListener('timeupdate', function () {
-        if (this.currentTime >= 7.8) {
-            this.currentTime = 0.4;
-            this.play().catch(e => console.log(e));
-        }
-    });
-}
-
 const texts = gsap.utils.toArray('.loader-text');
-
-// Prepara o texto para a rotação 3D
 gsap.set(texts, { opacity: 0, rotateX: -90, transformOrigin: "center center", transformPerspective: 800 });
 
 texts.forEach((text, index) => {
     let isLast = index === texts.length - 1;
-
     let durationIn = 0.4;
-    // O tempo de leitura fica um pouco menor para dar dinamismo, exceto na última frase
     let delayOut = isLast ? 0.8 : 0.4;
 
     // Anima a entrada (gira de -90 até 0)
@@ -64,7 +41,6 @@ texts.forEach((text, index) => {
 
     // Anima a saída
     if (!isLast) {
-        // Gira de 0 até 90 para sumir (continuando a rotação)
         loaderTimeline.to(text, {
             opacity: 0,
             rotateX: 90,
@@ -109,19 +85,25 @@ loaderTimeline
         "-=0.5"
     )
     .fromTo("#hero",
-        { clipPath: "inset(15% 30% 15% 30% round 5px)", scale: 0 },
-        { clipPath: "inset(0% 0% 0% 0% round 0px)", scale: 1, duration: 2, ease: "power2.out" },
+        { scale: 0, opacity: 0, transformOrigin: "center center", clipPath: "inset(0% 0% 0% 0%)" },
+        { scale: 1, opacity: 1, duration: 1.5, ease: "power2.out" },
         "<"
     );
-*/
-
-// CHAMA DIRETO JÁ QUE O LOADER ESTÁ DESLIGADO:
-document.body.style.overflow = "auto";
-initScrollAnimations();
-
-
-// Aguarda o final do loader (aproximadamente) para criar os ScrollTriggers, ou cria logo de cara.
-// Aqui vamos criar os triggers imediatamente, o loader não afetará as posições de scroll.
+// ==========================================
+// Limite de Loop do Vídeo Global (0.4s a 7.6s)
+// ==========================================
+const globalVideoContent = document.querySelector('.global-fixed-video video');
+if (globalVideoContent) {
+    globalVideoContent.addEventListener('loadedmetadata', () => {
+        globalVideoContent.currentTime = 0.3;
+    });
+    globalVideoContent.addEventListener('timeupdate', function () {
+        if (this.currentTime >= 7.8) {
+            this.currentTime = 0.4;
+            this.play().catch(e => console.log(e));
+        }
+    });
+}
 
 
 
@@ -170,13 +152,13 @@ if (heroContainer && revealImage) {
     });
 
     gsap.ticker.add(() => {
-        // Interpolação para movimento suave do reveal principal
-        currentX += (targetX - currentX) * 0.15;
-        currentY += (targetY - currentY) * 0.15;
+        // Interpolação para movimento suave do reveal principal (fator menor = mais atraso)
+        currentX += (targetX - currentX) * 0.03;
+        currentY += (targetY - currentY) * 0.03;
 
         // Aplica a máscara final sempre, garantindo que em 0px ela oculte totalmente o Pelé
         let currentSize = Math.max(0, mainState.size);
-        let maskString = `radial-gradient(circle ${currentSize}px at ${currentX}px ${currentY}px, black 0%, black 40%, transparent 100%)`;
+        let maskString = `radial-gradient(circle ${currentSize}px at ${currentX}px ${currentY}px, black 0%, black 50%, transparent 100%)`;
         revealImage.style.webkitMaskImage = maskString;
         revealImage.style.maskImage = maskString;
     });
@@ -202,62 +184,47 @@ function initScrollAnimations() {
 
     // 1. Hover na hero agora funciona o tempo todo, sem pointerEvents: none
 
-    // A) Animação Hero Shrink: Corta as bordas pra ficar quadrado e diminui até sumir (TUDO AO MESMO TEMPO)
+    // A) Animação Hero Shrink
     tl.fromTo("#hero",
         { clipPath: "inset(0% 0% 0% 0% round 0px)", scale: 1 },
         {
-            clipPath: "inset(15% 30% 15% 30% round 5px)", // Corta para quadrado sem borda muito redonda
+            clipPath: "inset(15% 30% 15% 30% round 5px)",
             scale: 0,
-            duration: 1.5, // Acelerado conforme pedido
+            duration: 1.5,
             ease: "power2.inOut",
             immediateRender: false
         },
         "inicio"
     );
 
-    // B) Aparece o vídeo fixo no centro (Só na metade do scroll da hero, ou seja, em 1.5)
     tl.fromTo(videoContainer,
         { opacity: 0, scale: 0.9 },
         { opacity: 1, scale: 1, duration: 1.5 },
         "inicio+=1.5"
     );
 
-    // C) Animação do Autógrafo (Reveal, Fill, Undo Fill, Undo Stroke)
     tl.to(".autograph-container", { opacity: 1, duration: 0.1 }, "inicio+=2.5");
 
     const autoPath = document.querySelector('.autograph-path');
     if (autoPath) {
-        // Tamanho total aproximado do caminho do SVG do autógrafo
         const length = autoPath.getTotalLength() || 15000;
 
-        // Configura o preenchimento para 0 opacidade, preparando o gradiente
         gsap.set(autoPath, {
             strokeDasharray: length,
             strokeDashoffset: length,
-            fill: "url(#paint0_linear_60_17)",
             fillOpacity: 0
         });
 
-        // 1. Draw stroke (reveal)
-        tl.to(autoPath, { strokeDashoffset: 0, duration: 1, ease: "none" }, "inicio+=2.6");
-
-        // 2. Fill
+        tl.to(autoPath, { strokeDashoffset: 0, duration: 0.6, ease: "none" }, "inicio+=2.5");
         tl.to(autoPath, { fillOpacity: 1, duration: 0.3, ease: "none" }, "inicio+=3.1");
-
-        // 3. Undoes Stroke
         tl.to(autoPath, { strokeDashoffset: length, duration: 1, ease: "none" }, "inicio+=3.6");
-
-        // 4. Remove o Fill
         tl.to(autoPath, { fillOpacity: 0, duration: 0.3, ease: "none" }, "inicio+=4.1");
-
-        // Fade out de garantia do container do svg
         tl.to(".autograph-container", { opacity: 0, duration: 0.1 }, "inicio+=4.6");
     } else {
         tl.to(videoContainer, { duration: 1.5 }, "inicio+=2.5");
     }
 
-    // D) Scroll Horizontal das imagens espalhadas (Atrás e Frente)
-    let amountToScroll = window.innerWidth * 2.3; // Movemos 350vw para TODAS as imagens saírem da tela
+    let amountToScroll = window.innerWidth * 2.3;
     tl.to(scrollContainers, {
         x: -amountToScroll,
         ease: "none",
@@ -266,9 +233,6 @@ function initScrollAnimations() {
 
     tl.addLabel("galeriaStart", "inicio+=4.6");
 
-    // Transformar a seção azul em branca (fundo transparente para revelar o body)
-    // Se 5.0 de duração = 350vw, então 1.42 (vamos usar 1.5) = 100vw.
-    // Duração total acaba em 9.6. Então começamos a ficar branco em 8.1.
     tl.to("#combined-wrapper", {
         backgroundColor: "transparent",
         color: "#111",
@@ -276,12 +240,6 @@ function initScrollAnimations() {
         duration: 1.5
     }, "inicio+=8.1");
 
-    // Gap final removido! Assim que acaba de ficar branco, a próxima seção já sobe, matando o delay.
-
-    // (image-parallax removed)
-
-    // ==========================================
-    // 6. SPC Textos Sequenciais e Rotação Final
     // ==========================================
     let videoPinDuration = 2250; // Ajustado para remover o gap vazio e reduzir scroll pela metade
 

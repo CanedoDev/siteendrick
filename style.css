@@ -208,20 +208,7 @@ body {
     text-transform: uppercase;
     position: absolute;
     opacity: 0;
-    /* será animado */
     white-space: nowrap;
-}
-
-.loader-logo {
-    width: 200px;
-    height: 200px;
-}
-
-/* Configuração inicial para o draw stroke */
-.loader-logo path,
-.loader-logo circle {
-    stroke-dasharray: 500;
-    stroke-dashoffset: 500;
 }
 
 /* 2 & 3. Hero e Text Parallax */
@@ -784,11 +771,6 @@ body {
     border-radius: 20px;
 }
 
-/* Loader */
-#loader {
-    display: none;
-}
-
 /* Combined Section Wrapper */
 #combined-section-wrapper {
     position: relative;
@@ -925,11 +907,12 @@ body {
 .green-sec-img {
     position: absolute;
     height: auto;
-    z-index: 2; /* Fica atrás das estatísticas e do vídeo principal */
+    z-index: 2;
+    /* Fica atrás das estatísticas e do vídeo principal */
 }
 
 .top-right-img {
-    width: 35vw;
+    width: 30vw;
     top: 15%;
     right: 5%;
 }
@@ -957,15 +940,16 @@ body {
 }
 
 .sequential-stat.stat-left {
-    top: 50%;
+    top: 20%;
     left: 10%;
-    transform: translateY(-50%);
+    transform: none;
 }
 
 .sequential-stat.stat-right {
-    top: 50%;
+    top: auto;
+    bottom: 20%;
     right: 10%;
-    transform: translateY(-50%);
+    transform: none;
 }
 
 /* Timeline Section */
@@ -1025,7 +1009,8 @@ body {
     font-size: clamp(2.5rem, 4.4vw, 4.4rem) !important;
 }
 
-.timeline-title, .timeline-title-smaller {
+.timeline-title,
+.timeline-title-smaller {
     font-family: 'Clash Display', sans-serif;
     font-weight: 600;
     --bg-translate: -101%;
@@ -1073,7 +1058,8 @@ body {
 
 .timeline-img {
     position: absolute;
-    height: auto; /* Mantém a proporção real da imagem */
+    height: auto;
+    /* Mantém a proporção real da imagem */
     z-index: 1;
 }
 
