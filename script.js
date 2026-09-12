@@ -6,13 +6,24 @@ window.scrollTo(0, 0);
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 // Variável para checar se a página já carregou completamente
-let isLoaded = false;
-window.addEventListener("load", () => {
-    isLoaded = true;
-    if (window.waitingForLoad) {
-        window.waitingForLoad();
-    }
-});
+let isLoaded = document.readyState === "complete";
+if (!isLoaded) {
+    window.addEventListener("load", () => {
+        isLoaded = true;
+        if (window.waitingForLoad) {
+            window.waitingForLoad();
+        }
+    });
+    // Fallback de segurança para conexões mais lentas
+    setTimeout(() => {
+        if (!isLoaded) {
+            isLoaded = true;
+            if (window.waitingForLoad) {
+                window.waitingForLoad();
+            }
+        }
+    }, 4000);
+}
 
 // Impede o scroll inicialmente
 document.body.style.overflow = "hidden";
@@ -90,18 +101,32 @@ loaderTimeline
         "<"
     );
 // ==========================================
-// Limite de Loop do Vídeo Global (0.4s a 7.6s)
+// Limite de Loop do Vídeo Global (0.4s a 7.8s)
 // ==========================================
 const globalVideoContent = document.querySelector('.global-fixed-video video');
 if (globalVideoContent) {
-    globalVideoContent.addEventListener('loadedmetadata', () => {
-        globalVideoContent.currentTime = 0.3;
-    });
+    const setStartTime = () => {
+        if (globalVideoContent.currentTime < 0.3 || globalVideoContent.currentTime >= 7.8) {
+            globalVideoContent.currentTime = 0.3;
+        }
+    };
+
+    if (globalVideoContent.readyState >= 1) {
+        setStartTime();
+    } else {
+        globalVideoContent.addEventListener('loadedmetadata', setStartTime, { once: true });
+    }
+
     globalVideoContent.addEventListener('timeupdate', function () {
         if (this.currentTime >= 7.8) {
             this.currentTime = 0.4;
             this.play().catch(e => console.log(e));
         }
+    });
+
+    globalVideoContent.addEventListener('ended', function () {
+        this.currentTime = 0.4;
+        this.play().catch(e => console.log(e));
     });
 }
 
